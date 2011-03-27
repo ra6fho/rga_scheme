@@ -68,3 +68,31 @@
                                 (append out3 (list (/ (+ (- 0.0 (car ch1)) (* 3.0 (car ch2))) 2.0)))))))
 ;;;Пример вызова
 ;;;(linear-crossover '(6.0 4.0 8.0) '(3.0 8.0 9.0) '() '() '())
+
+;;; Мутация гена
+(define (gene-mutation gene percent)
+  (cond ((or (< percent 0) (> percent 100)) (display "Wrong percentage of mutation!!!"))
+        (else (random-double (- gene (* gene (/ percent 100))) (+ gene (* gene (/ percent 100)))))))
+;;;Пример вызова
+;;;(gene-mutation 5.0 10)
+
+;;;Мутация хромосомы
+(define (ch-mutation ch chance percent out)
+  (cond ((null? ch) out)
+        ((or (< chance 0) (> chance 100)) (display "Wrong chance!!!"))
+        ((equal? 0 (random (- 101 chance))) (ch-mutation (cdr ch) chance percent (append out (list (gene-mutation (car ch) percent)))))
+        (else (ch-mutation (cdr ch) chance percent (append out (list (car ch)))))))
+;;;Пример вызова
+;;;(ch-mutation '(1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 9.0 10.0) 70 20 '())
+
+;;;Мутация популяции
+(define (population-mutation population chance percent out)
+  (cond ((null? population) out)
+        (else (population-mutation (cdr population) chance percent (append out (list (ch-mutation (car population) chance percent '())))))))
+;;;Пример вызова
+;;;(population-mutation (list '(1.0 2.0 3.0) '(4.0 5.0 6.0) '(7.0 8.0 9.0)) 50 20 '())
+
+
+
+
+   
